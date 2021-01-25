@@ -43,25 +43,53 @@ router.get('/contact', auth , async (req, res) => {
   
   const { page = 1 , name = null , email = null } = req.query;
   const limit = 10
+  var contacts , count
+
   try {
     
-    const contacts = await Contact.find({name})
+    if( !!name && !!email) {
+    
+    contacts = await Contact.find({name,email})
       .limit(limit)
       .skip((page - 1) * limit)
       .exec();
-      
+    count = await Contact.countDocuments({name,email});
 
-    const count = await Contact.countDocuments();
+    } else if( !!name ) {
+    
+    contacts = await Contact.find({name})
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .exec();
+     count = await Contact.countDocuments({name});
+    
+    } else if( !!email ) {
+
+     contacts = await Contact.find({email})
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .exec();
+     count = await Contact.countDocuments({email});
+   
+    }  else {
+      
+     contacts = await Contact.find({})
+        .limit(limit)
+        .skip((page - 1) * limit)
+        .exec();
+     count = await Contact.countDocuments({});
+
+    }
 
     res.json({
       contacts,
       totalPages: Math.ceil(count / limit),
       currentPage: page
     });
+
   } catch (err) {
     console.error(err.message);
   }
 });
-
 
 module.exports = router;
