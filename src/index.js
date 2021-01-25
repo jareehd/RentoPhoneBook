@@ -3,13 +3,16 @@ const app = express()
 require('dotenv').config()
 const UserRoutes = require('./routers/userRoutes.js')
 
+require('./db/database')
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 const port = process.env.PORT || 3000
 
-app.use(UserRoutes)
 app.set('view engine' ,'ejs')
+
+app.use(UserRoutes)
 
 app.get('/*',(req,res)=>{
     res.send('Error wrong page')
