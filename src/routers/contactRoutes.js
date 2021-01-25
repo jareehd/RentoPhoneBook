@@ -38,6 +38,30 @@ router.delete('/contact/:id', auth , async(req,res)=>{
   }
 })
 
+// fetching contact data max 10 per page
+router.get('/contact', auth , async (req, res) => {
+  
+  const { page = 1 , name = null , email = null } = req.query;
+  const limit = 10
+  try {
+    
+    const contacts = await Contact.find({name})
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .exec();
+      
+
+    const count = await Contact.countDocuments();
+
+    res.json({
+      contacts,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page
+    });
+  } catch (err) {
+    console.error(err.message);
+  }
+});
 
 
 module.exports = router;

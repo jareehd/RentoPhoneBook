@@ -5,6 +5,10 @@ const jwt = require('jsonwebtoken')
 
 const secret = process.env.jwt_secret
 
+router.get('/' , (req,res)=>{
+    res.send('Home')
+})
+
 router.post('/signup' ,async function (req,res){
     const user = new User(req.body)
     try {
