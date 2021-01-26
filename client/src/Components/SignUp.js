@@ -55,7 +55,7 @@ class SignUp extends React.Component {
     ) {
       alert("Please Enter all the Information");
     } else {
-      const url = 'http://localhost:5000/signup';
+      const url = '/signup';
       const data = {
         name: this.state.name,
         email: this.state.email,

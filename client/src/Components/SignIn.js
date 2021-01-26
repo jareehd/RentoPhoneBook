@@ -52,7 +52,7 @@ class SignIn extends React.Component {
           alert("Please Enter all the Details");
         } else {
           
-         const url = 'http://localhost:5000/login' ;
+         const url = '/login' ;
           axios
             .post(url, {
               email: this.state.email,

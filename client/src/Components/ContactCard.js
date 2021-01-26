@@ -5,7 +5,8 @@ import axios from 'axios'
 export default function ContactCard(props){
 
     const del = async () => { 
-        const url = `http://localhost:5000/contact/${props.contact._id}`
+        // const url1 ='http://localhost:5000'
+        const url = `/contact/${props.contact._id}`
         const Axios = axios.create({
             baseURL: url,
             headers: {
@@ -13,9 +14,6 @@ export default function ContactCard(props){
             }
         })
         await Axios.delete();
-
-
-
     }
 
     return (

@@ -10,7 +10,7 @@ const LandingPage = () => {
   const [page, setPage] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const url = 'http://localhost:5000/contact';
+  const url = '/contact';
 
   const onFilterPost = async () => {
     
