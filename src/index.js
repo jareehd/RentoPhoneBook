@@ -17,6 +17,12 @@ const port = process.env.PORT || 5000
 app.use(UserRoutes)
 app.use(ContactRoutes)
 
+app.use(express.static(path.join(__dirname, "../client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
+
 app.listen(port,() =>{
     console.log('Server is up on port ',port)
 })
