@@ -8,7 +8,7 @@ const ContactRoutes = require('./routers/contactRoutes.js')
 
 require('./db/database')
 
-app.use(cors)
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 

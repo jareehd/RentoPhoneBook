@@ -3,30 +3,16 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import axios from "axios";
+import { Redirect } from 'react-router';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const useStyles = makeStyles((theme) => ({
+const styles = theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -44,11 +30,65 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-}));
+});
 
-export default function SignUp() {
-  const classes = useStyles();
+class SignUp extends React.Component {
+  
+    state ={
+      name: null,
+      email: null,
+      password: null,
+      redirect:false
+    }
+   
+    
 
+  register(e) {
+    e.preventDefault();
+
+    //Call API
+
+    if (
+      !this.state.name ||
+      !this.state.email ||
+      !this.state.password 
+    ) {
+      alert("Please Enter all the Information");
+    } else {
+      const url = 'http://localhost:5000/signup';
+      const data = {
+        name: this.state.name,
+        email: this.state.email,
+        password: this.state.password,
+      };
+      console.log(data);
+      axios.post(url, data).then(
+        (response) => {
+          if (response.data) {
+            localStorage.setItem("token", response.data);
+            alert("Registration Successfull");
+            // this.props.nextStep();
+            this.setState({
+              redirect: true,
+            });
+          } else {
+            console.log(response);
+            alert("Something Went Wrong");
+          }
+        },
+        (error) => {
+          console.log(error);
+          alert("Something Went Wrong");
+        }
+      );
+    }
+  }
+
+  render(){ 
+  const { classes } = this.props;
+  if (this.state.redirect) {
+    return <Redirect push to="/dashboard" />;
+  }
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -61,27 +101,19 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} >
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="name"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="name"
+                label="Name"
                 autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
+                onChange = {(e) =>{
+                    this.setState({name:e.target.value})} 
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -93,6 +125,9 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                onChange = {(e) =>{
+                    this.setState({email:e.target.value})} 
+                }
               />
             </Grid>
             <Grid item xs={12}>
@@ -105,14 +140,12 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                onChange = {(e) =>{
+                    this.setState({password:e.target.value})} 
+                }
               />
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
-              />
-            </Grid>
+            
           </Grid>
           <Button
             type="submit"
@@ -120,6 +153,7 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={(e) => this.register(e)}
           >
             Sign Up
           </Button>
@@ -132,10 +166,9 @@ export default function SignUp() {
           </Grid>
         </form>
       </div>
-      <Box mt={5}>
-        <Copyright />
-      </Box>
     </Container>
   );
-}
+}}
 
+
+export default withStyles(styles, { withTheme: true })(SignUp);
