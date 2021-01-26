@@ -5,14 +5,6 @@ const jwt = require('jsonwebtoken')
 
 const secret = process.env.jwt_secret
 
-router.get('/' , (req,res)=>{
-    res.render('home')
-})
-
-router.get('/signup' , (req,res)=>{
-    res.render('signup')
-})
-
 router.post('/signup' ,async function (req,res){
     const user = new User(req.body)
     try {
@@ -22,10 +14,6 @@ router.post('/signup' ,async function (req,res){
     } catch (e) {
         res.status(400).send(e.message)
     }
-})
-
-router.get('/login', (req,res)=>{
-    res.render('login')
 })
 
 router.post('/login' , async (req,res) => {
