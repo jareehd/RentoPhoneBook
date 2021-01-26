@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ContactCard from "./ContactCard";
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 const LandingPage = () => {
   const [items, setItems] = useState([]);
@@ -11,26 +13,37 @@ const LandingPage = () => {
   const url = 'http://localhost:5000/contact';
 
   const onFilterPost = async () => {
-    if (page || name || email) {
-      const Axios = axios.create({
+    
+    var Axios
+    if ( name || email ) {
+      
+      Axios = axios.create({
         baseURL: url,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         params: {
-            page, 
             name,
             email
         },
       });
+    } else {
+        Axios = axios.create({
+            baseURL: url,
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            }
+        })
+    }
 
       try {
         const res = await Axios.get();
         setItems(res.data);
       } catch (e) {
+        alert(e)
         console.log(e);
       }
-    }
+    
   };
 
   useEffect(() => {
@@ -46,6 +59,7 @@ const LandingPage = () => {
         const result = await Axios.get();
         setItems(result.data);
         setLoading(false);
+        setPage(result.data.currentPage)
       } catch (e) {
         console.log(e);
       }
@@ -58,7 +72,39 @@ const LandingPage = () => {
   ) : (
       <div>
         
+        <div >
+          
+        <TextField
+            variant="outlined"
+            margin="normal"
+            label="Name"
+            name="name"
+            autoComplete="name"
+            onChange={(event) => {
+                setName(event.target.value)
+            }}
+          />
+
+        <TextField
+            variant="outlined"
+            margin="normal"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            onChange={(event) => {
+                setEmail(event.target.value)
+            }}
+          />
         
+            <Button
+            variant="contained"
+            margin='normal'  
+            color="primary"
+            onClick={onFilterPost}
+          >
+            Filter By Email / Name
+          </Button>
+        </div>
 
         {items.contacts.map((item) => (
             <ContactCard
@@ -66,6 +112,7 @@ const LandingPage = () => {
               contact={item}
             ></ContactCard>
         ))}
+
       </div>
       
   );
